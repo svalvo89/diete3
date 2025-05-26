@@ -65,6 +65,8 @@ def extract_first(pattern, text, cast=float, default=None):
 
 def parse_pdf(pdf):
     data = defaultdict(lambda: None)
+    # inizializza set condizioni per evitare TypeError
+    data["conditions"] = set()
     if not PdfReader:
         return data
     try:
@@ -83,6 +85,7 @@ def parse_pdf(pdf):
     elif "femmina" in text or re.search(r"\b(f)\b", text):
         data["sex"] = "F"
 
+    # mapping parole→codice
     for word in SUPPORTED_PATHOLOGIES:
         if word in text:
             data["conditions"].add(word)
@@ -97,11 +100,12 @@ def parse_pdf(pdf):
         data["activity"] = 1.725
     return data
 
-pdf_data = parse_pdf(pdf_file) if pdf_file else defaultdict(lambda: None)
+pdf_data = parse_pdf(pdf_file) if pdf_file else defaultdict(lambda: set())
 for p in manual_paths:
     if p in SUPPORTED_PATHOLOGIES:
         pdf_data["conditions"].add(p)
 
+# Riepilogo patologie
 if pdf_data["conditions"]:
     st.subheader("Patologie riconosciute")
     for c in sorted(pdf_data["conditions"]):
