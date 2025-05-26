@@ -1,3 +1,1 @@
-streamlit
-python-docx
-PyPDF2
+streamlit\npython-docx\nPyPDF2
